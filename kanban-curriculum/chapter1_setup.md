@@ -1,0 +1,285 @@
+# 第1章: Cursor入門とプロジェクトセットアップ
+
+## 学習目標
+- Cursorの基本操作を理解する
+- 主要なショートカットキーを習得する
+- React + Viteプロジェクトを効率的にセットアップする
+
+## 1.1 Cursorのインストール
+
+### ダウンロードとインストール
+1. [Cursor公式サイト](https://cursor.sh/)からダウンロード
+2. OSに応じたインストーラーを実行
+3. 初回起動時の設定
+   - AIモデルの選択（推奨：Claude 3.5 Sonnet）
+   - テーマの選択（お好みで）
+
+## 1.2 基本UI/UXの理解
+
+### 主要なパネル
+- **エディタエリア**: コードを編集するメイン領域
+- **サイドバー**: ファイルエクスプローラー（Cmd+B / Ctrl+B で表示/非表示）
+- **チャット**: AIとの対話（Cmd+L / Ctrl+L）
+- **Agent**: 複数ファイル編集・自律的タスク実行（Cmd+I / Ctrl+I）
+- **ターミナル**: コマンド実行（Cmd+J / Ctrl+J）
+
+### 重要なショートカットキー
+
+| 機能 | Mac | Windows/Linux | 説明 |
+|------|-----|---------------|------|
+| インライン編集 | Cmd+K | Ctrl+K | 選択範囲をAIで編集 |
+| チャット | Cmd+L | Ctrl+L | AIと対話 |
+| Agent | Cmd+I | Ctrl+I | 複数ファイル編集/自律的タスク実行 |
+| Tab補完 | Tab | Tab | AI自動補完 |
+| サイドバー | Cmd+B | Ctrl+B | ファイル表示/非表示 |
+| ターミナル | Cmd+J | Ctrl+J | ターミナルパネル |
+
+## 1.3 プロジェクトの初期設定
+
+### ハンズオン課題1: プロジェクトセットアップ
+
+1. **新規フォルダの作成**
+```bash
+mkdir kanban-board-cursor
+cd kanban-board-cursor
+```
+
+2. **Cursorでフォルダを開く**
+   - File → Open Folder から作成したフォルダを選択
+
+3. **チャット（Cmd+L）を開いて、以下を入力：**
+
+```
+React + Vite + TypeScriptでプロジェクトを初期化してください。
+プロジェクト名: kanban-board
+以下も設定してください：
+- TypeScriptを使用
+- package.jsonにnpm scripts追加
+- .gitignoreファイル作成
+```
+
+**💡 ポイント**: Cursorは指示に従ってコマンドを提案し、実行の承認を求めてきます。内容を確認して「Run」をクリック。
+
+### 期待される実行内容
+```bash
+npm create vite@latest . -- --template react-ts
+npm install
+```
+
+## 1.4 必要なライブラリの導入
+
+### ハンズオン課題2: バックエンドとフロントエンドライブラリの追加
+
+**チャット（Cmd+L）に以下を入力：**
+
+```
+フロントエンドとバックエンドの必要なライブラリをインストールしてください：
+
+【バックエンド】
+1. Express（APIサーバー）
+2. SQLite3とbetter-sqlite3（データベース）
+3. cors（CORS対応）
+4. nodemon（開発用）
+
+【フロントエンド】
+1. Tailwind CSS（スタイリング）
+2. shadcn/ui（UIコンポーネント）  
+3. React Beautiful DnD（ドラッグ&ドロップ）
+4. Zustand（状態管理）
+5. Lucide React（アイコン）
+6. axios（API通信）
+
+必要な設定ファイルの作成と、package.jsonの更新もお願いします。
+```
+
+**Cursorが実行する内容の例：**
+- 各ライブラリのインストールコマンド
+- tailwind.config.jsの作成
+- globals.cssへのTailwind追加
+- components.jsonの作成（shadcn/ui用）
+
+## 1.5 プロジェクト構造の作成
+
+### ハンズオン課題3: フルスタック構造を自動生成
+
+**Cmd+K（インライン編集）を使って構造を作成：**
+
+1. エディタで新規ファイルを作成（Cmd+N）
+2. 以下のテキストを貼り付け
+3. 全選択してCmd+K
+4. 「この構造でディレクトリとファイルを作成するbashスクリプトを生成」と入力
+
+```
+backend/
+├── server.js
+├── db/
+│   ├── database.js
+│   └── schema.sql
+└── routes/
+    └── cards.js
+
+src/
+├── components/
+│   ├── Board/
+│   ├── Column/
+│   ├── Card/
+│   └── ui/
+├── hooks/
+├── store/
+├── types/
+└── services/
+    └── api.js
+```
+
+## 1.6 .cursorrulesファイルの作成
+
+### プロジェクトルールの設定
+
+**.cursorrulesファイルを作成して、以下を記載：**
+
+```text
+# Kanban Board Project Rules
+
+## Tech Stack
+- Frontend: React 18+ with TypeScript, Vite
+- Backend: Express + SQLite3
+- Styling: Tailwind CSS
+- UI Components: shadcn/ui
+- Drag & Drop: React Beautiful DnD
+- State: Zustand
+- API: axios
+
+## Code Style
+- Functional components only
+- TypeScript strict mode
+- Tailwind for styling
+- Custom hooks for logic
+- RESTful API design
+
+## Database
+- SQLite with better-sqlite3
+- Proper SQL queries (no raw string concatenation)
+- Transaction support for complex operations
+
+## AI Instructions
+- Always use TypeScript
+- Prefer Tailwind classes over CSS files
+- Use shadcn/ui components when available
+- Implement proper error handling
+- Create API endpoints with Express
+- Use proper SQL parameterized queries
+```
+
+**💡 ポイント**: このファイルによりCursorが一貫したコードを生成します。
+
+## 1.7 基本的なApp.tsxの作成
+
+### ハンズオン課題4: Tab補完で最初のコンポーネント
+
+1. `src/App.tsx`を開く
+2. 既存のコードを全削除
+3. 以下のコメントを入力してTabキー
+
+```tsx
+// Create a simple kanban board layout with three columns: Todo, Doing, Done
+// Use Tailwind CSS for styling
+```
+
+**Tab補完が生成するコード例：**
+```tsx
+function App() {
+  return (
+    <div className="min-h-screen bg-gray-50 p-8">
+      <h1 className="text-3xl font-bold text-center mb-8">
+        Kanban Board
+      </h1>
+      <div className="flex gap-4 justify-center">
+        <div className="bg-white rounded-lg shadow p-4 w-80">
+          <h2 className="font-semibold text-lg mb-4">To Do</h2>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4 w-80">
+          <h2 className="font-semibold text-lg mb-4">Doing</h2>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4 w-80">
+          <h2 className="font-semibold text-lg mb-4">Done</h2>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default App
+```
+
+## 1.8 SQLiteデータベースの初期化
+
+### ハンズオン課題5: データベースセットアップ
+
+**チャット（Cmd+L）に以下を入力：**
+
+```
+backend/db/database.jsとschema.sqlを作成して、
+SQLiteデータベースを初期化してください：
+
+1. cardsテーブルとcolumnsテーブルの作成
+2. 初期データ（3つのカラム）の挿入
+3. 接続処理の実装
+
+better-sqlite3を使用してください。
+```
+
+## 1.9 開発サーバーの起動
+
+### 動作確認
+
+**バックエンドサーバー起動（ターミナル1）：**
+```bash
+npm run server
+```
+
+**フロントエンド開発サーバー起動（ターミナル2）：**
+```bash
+npm run dev
+```
+
+ブラウザで`http://localhost:5173`を開き、3つのカラムが表示されることを確認。
+APIは`http://localhost:3001`で動作。
+
+## 📝 この章で学んだこと
+
+- ✅ Cursorの基本的な操作方法
+- ✅ 主要ショートカット（Cmd+K、Cmd+L、Cmd+I、Tab）
+- ✅ チャットを使ったプロジェクト初期化
+- ✅ .cursorrulesによるプロジェクトルール設定
+- ✅ Tab補完による高速コーディング
+
+## 💡 Tips
+
+### 効果的なCursorの使い方
+
+1. **具体的な指示を出す**
+   - ❌ 「UIを作って」
+   - ✅ 「Tailwind CSSを使って3カラムのレイアウトを作成」
+
+2. **コンテキストを提供する**
+   - ファイルを開いた状態で質問
+   - @ファイル名 で特定のファイルを参照
+
+3. **段階的に進める**
+   - 一度に多くを要求しない
+   - 小さな変更を積み重ねる
+
+## 🚀 次の章へ
+
+第2章では、Tab補完とCmd+Kを使って実際のコンポーネントを作成していきます。
+
+---
+
+### 課題チェックリスト
+
+- [ ] Cursorのインストール完了
+- [ ] プロジェクトの初期化
+- [ ] 必要なライブラリの追加
+- [ ] ディレクトリ構造の作成
+- [ ] .cursorrulesファイルの設定
+- [ ] 基本レイアウトの表示確認
