@@ -1,42 +1,65 @@
-# プロジェクト概要とCursor最新情報
+# Cursor Curriculum Project Overview and Latest Information
 
-## プロジェクトの目的
-Cursorを使いこなすためのカリキュラムを作成。
-シンプルなかんばんボード（To Do、Doing、Done）を作りながらCursorの機能を学ぶ。
+## Project Purpose
+Creating a curriculum to master Cursor.
+Learning Cursor features while building a simple kanban board (To Do, Doing, Done).
 
-## 重要な要件
-- UIはシンプルだがリッチにしたい（外部ライブラリを積極活用）
-- コードは少なく、ライブラリを使って効率的に
-- Todoアプリではなく、かんばんボード
-- デプロイ機能は不要
-- 高度な機能も不要
-- AIコードレビュー機能を含める
+## Key Requirements
+- Simple but rich UI (actively utilize external libraries)
+- Minimal code, efficient with libraries
+- Kanban board, not a Todo app
+- No deployment functionality needed
+- No advanced features needed
+- Include AI code review functionality
 
-## Cursor最新情報（2024-2025）
+## Cursor Latest Information (August 2025 Update)
 
-### Composerの3つのモード
-スクリーンショットで確認した正確な情報：
-1. **Agent**: 自律的なタスク実行、npmコマンド実行可能
-2. **Ask**: コードに関する質問や相談
-3. **Background**: バックグラウンドでのタスク実行
+### Update Background
+Updated the entire curriculum based on Cursor's latest features as of August 22, 2025.
 
-※ "Normalモード"という名称は存在しない
+### Major Changes
 
-### 主要ショートカット
-- Cmd+K (Ctrl+K): インライン編集
-- Cmd+L (Ctrl+L): チャット
-- Cmd+I (Ctrl+I): Composer起動
-- Tab: AI自動補完
+#### 1. Terminology Unification: Composer → Agent
+- **Old**: Features called Composer
+- **New**: Unified as Agent features
 
-### 注意事項
-- サンプルフォルダの古いカリキュラムは参考にしない
-- 最新のCursor機能に基づいて作成する
-- 2024年11月以降のアップデートを反映
+#### 2. Mode Name Changes
+- **Agent Mode**: Autonomous execution of complex tasks
+- **Ask Mode**: Read-only Q&A mode
+- **Custom Mode**: User-defined workflows (Background mode deprecated)
 
-## カリキュラム構成
-1. Cursor入門とプロジェクトセットアップ
-2. Tab補完とCmd+Kでコンポーネント作成
-3. チャット（Cmd+L）で複雑なロジック実装
-4. Composerの3つのモードを使いこなす
-5. AIコードレビューで品質向上
-6. 実践テクニックとトラブルシューティング
+Note: "Normal mode" doesn't exist; Background mode was replaced with Custom mode in 2025
+
+### Key Shortcuts
+- Cmd+K (Ctrl+K): Inline editing
+- Cmd+L (Ctrl+L): Chat (equivalent to Ask mode)
+- Cmd+I (Ctrl+I): Launch Agent (formerly Composer)
+- Tab: AI auto-completion
+
+### Notes
+- Don't reference old curriculum in sample folders
+- Create based on latest Cursor features
+- Reflect updates after November 2024
+
+## Curriculum Structure
+1. Cursor introduction and project setup
+2. Component creation with Tab completion and Cmd+K
+3. Complex logic implementation with Chat (Cmd+L)
+4. Mastering Agent's three modes
+5. Quality improvement with AI code review
+6. Practical techniques and troubleshooting
+
+## Implementation Features
+- **Practical**: Learn while building a kanban board app
+- **Full-stack**: React + Express + SQLite configuration
+- **Latest features**: Fully compatible with Cursor features as of August 2025
+
+## SQLite Requirements
+- Use SQLite for data persistence
+- Implementation using better-sqlite3
+- CRUD operations via RESTful API
+
+## Future Update Policy
+- Continuously update curriculum with Cursor updates
+- Reflect user feedback
+- Maintain practical learning experience
