@@ -21,92 +21,122 @@
 
 ※ Customモードも存在し、独自のワークフローを定義できますが、本カリキュラムではAgentとAskモードに焦点を当てます。
 
-## 4.2 Agentモードでバックエンド自動構築
+## 4.2 Agentモードでデータ永続化の実装
 
-### ハンズオン課題1: Express + SQLiteサーバーの完全構築
+### ハンズオン課題1: ローカルストレージでのデータ永続化
 
 **Agent（Cmd+I）を開いて、Agentモードを選択し、以下を入力：**
 
 ```
-Express + SQLiteでバックエンドAPIを完全に構築してください。
+ローカルストレージを使用したデータ永続化機能を完全に実装してください。
 
 要件：
-1. 必要なパッケージのインストール（express, better-sqlite3, cors, nodemon）
-2. backend/server.js の作成
-3. backend/db/database.js でSQLite接続
-4. backend/db/schema.sql でテーブル定義
-5. backend/routes/cards.js でRESTful API実装
-6. データベースの初期化と初期データ投入
-7. package.jsonにサーバー起動スクリプト追加
+1. src/utils/storage.ts でローカルストレージ操作のユーティリティ作成
+2. src/store/kanbanStore.ts にローカルストレージとの同期機能追加
+3. 自動保存機能の実装（変更があったら即座に保存）
+4. データのマイグレーション機能（古いフォーマットから新しいフォーマットへ）
+5. データのエクスポート/インポート機能
+6. リセット機能（初期データに戻す）
+7. エラーハンドリング（ストレージ容量超過など）
 
-すべて自動で実行し、http://localhost:3001 でAPIサーバーを起動できるようにしてください。
+すべてのカード操作がローカルストレージに自動保存されるようにしてください。
 ```
 
 **Agentモードの動作：**
-1. 必要なパッケージを自動インストール
-2. バックエンドファイル構造を作成
-3. SQLiteデータベースを初期化
-4. APIエンドポイントを実装
+1. ストレージユーティリティを作成
+2. Zustandストアにミドルウェアを追加
+3. 自動保存機能を実装
+4. データの永続化を確認
 5. エラーがあれば自動修正
 
-**生成されるサーバーコードの例：**
-```javascript
-// backend/server.js
-const express = require('express')
-const cors = require('cors')
-const Database = require('better-sqlite3')
-const path = require('path')
-
-const app = express()
-const PORT = process.env.PORT || 3001
-
-// Database setup
-const db = new Database('kanban.db')
-
-// Middleware
-app.use(cors())
-app.use(express.json())
-
-// Initialize database
-const initDB = () => {
-  const schema = `
-    CREATE TABLE IF NOT EXISTS cards (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      description TEXT,
-      priority TEXT CHECK(priority IN ('high', 'medium', 'low')),
-      column_id TEXT NOT NULL,
-      position INTEGER NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS columns (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      position INTEGER NOT NULL
-    );
-  `
-  db.exec(schema)
-  
-  // Insert initial columns if empty
-  const count = db.prepare('SELECT COUNT(*) as count FROM columns').get()
-  if (count.count === 0) {
-    const insertColumns = db.prepare('INSERT INTO columns (id, title, position) VALUES (?, ?, ?)')
-    insertColumns.run('todo', 'To Do', 0)
-    insertColumns.run('doing', 'Doing', 1)
-    insertColumns.run('done', 'Done', 2)
-  }
+**生成されるストレージコードの例：**
+```typescript
+// src/utils/storage.ts
+interface StorageData {
+  version: number
+  cards: Card[]
+  columns: Column[]
+  updatedAt: string
 }
 
-initDB()
+const STORAGE_KEY = 'kanban-board-data'
+const CURRENT_VERSION = 1
 
-// Routes
-app.use('/api/cards', require('./routes/cards'))
+export const storage = {
+  save: (data: Partial<StorageData>): void => {
+    try {
+      const existingData = storage.load()
+      const newData: StorageData = {
+        ...existingData,
+        ...data,
+        version: CURRENT_VERSION,
+        updatedAt: new Date().toISOString()
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newData))
+    } catch (error) {
+      if (error.name === 'QuotaExceededError') {
+        console.error('ローカルストレージの容量が不足しています')
+        // 古いデータをクリーンアップ
+        storage.cleanup()
+      }
+    }
+  },
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
-})
+  load: (): StorageData | null => {
+    try {
+      const data = localStorage.getItem(STORAGE_KEY)
+      if (!data) return null
+      
+      const parsed = JSON.parse(data)
+      
+      // データマイグレーション
+      if (parsed.version < CURRENT_VERSION) {
+        return storage.migrate(parsed)
+      }
+      
+      return parsed
+    } catch (error) {
+      console.error('データの読み込みに失敗しました', error)
+      return null
+    }
+  },
+
+  migrate: (oldData: any): StorageData => {
+    // バージョンごとのマイグレーション処理
+    let migrated = { ...oldData }
+    
+    if (!migrated.version || migrated.version < 1) {
+      // v0 → v1 のマイグレーション
+      migrated = {
+        version: 1,
+        cards: oldData.tasks || oldData.cards || [],
+        columns: oldData.columns || defaultColumns,
+        updatedAt: new Date().toISOString()
+      }
+    }
+    
+    return migrated
+  },
+
+  reset: (): void => {
+    localStorage.removeItem(STORAGE_KEY)
+  },
+
+  export: (): string => {
+    const data = storage.load()
+    return JSON.stringify(data, null, 2)
+  },
+
+  import: (jsonString: string): boolean => {
+    try {
+      const data = JSON.parse(jsonString)
+      storage.save(data)
+      return true
+    } catch {
+      return false
+    }
+  }
+}
 ```
 
 ## 4.3 Askモードでコード相談
@@ -136,80 +166,167 @@ app.listen(PORT, () => {
 - 仮想化ライブラリの提案
 - Zustandのセレクター最適化
 
-## 4.4 フロントエンドとバックエンドの統合
+## 4.4 Zustandストアとローカルストレージの統合
 
-### ハンズオン課題3: フルスタック連携の実装
+### ハンズオン課題3: 状態管理とデータ永続化の連携
 
 **Agent（Agentモード）で実装：**
 
 ```
-フロントエンドとバックエンドを完全に統合してください。
+Zustandストアとローカルストレージを完全に統合してください。
 
 実装内容：
-1. src/services/api.js でAPI通信層を作成
-2. src/hooks/useKanban.ts でAPIを使用するカスタムフック
-3. Zustandストアをバックエンドと同期
-4. リアルタイムでのCRUD操作
-5. エラーハンドリングとローディング状態
-6. オプティミスティック更新の実装
+1. src/store/kanbanStore.ts にpersistミドルウェアを追加
+2. カードの追加/編集/削除/移動時の自動保存
+3. アプリ起動時のデータ復元
+4. オプティミスティック更新（即座にUIを更新）
+5. エラーハンドリングとロールバック
+6. デバウンス処理で保存頻度を最適化
 
-すべてのコンポーネントがSQLiteデータベースと連携するようにしてください。
+すべての状態変更が自動的にローカルストレージに永続化されるようにしてください。
 ```
 
 **Agentが実行する統合コードの例：**
 ```typescript
 // src/store/kanbanStore.ts
 import { create } from 'zustand'
-import { cardAPI } from '@/services/api'
+import { persist, createJSONStorage } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
+import { storage } from '@/utils/storage'
 
 interface KanbanStore {
   cards: Card[]
+  columns: Column[]
   loading: boolean
   error: string | null
   
   // Actions
-  fetchCards: () => Promise<void>
-  addCard: (columnId: string, card: Partial<Card>) => Promise<void>
-  deleteCard: (id: string) => Promise<void>
-  moveCard: (id: string, columnId: string, position: number) => Promise<void>
+  addCard: (columnId: string, card: Partial<Card>) => void
+  updateCard: (id: string, updates: Partial<Card>) => void
+  deleteCard: (id: string) => void
+  moveCard: (cardId: string, newColumnId: string, newPosition: number) => void
+  resetBoard: () => void
+  importData: (jsonString: string) => boolean
+  exportData: () => string
 }
 
-export const useKanbanStore = create<KanbanStore>((set, get) => ({
-  cards: [],
-  loading: false,
-  error: null,
+const initialColumns: Column[] = [
+  { id: 'todo', title: 'To Do', cards: [], limit: undefined },
+  { id: 'doing', title: 'Doing', cards: [], limit: 3 },
+  { id: 'done', title: 'Done', cards: [], limit: undefined }
+]
 
-  fetchCards: async () => {
-    set({ loading: true, error: null })
-    try {
-      const cards = await cardAPI.getAll()
-      set({ cards, loading: false })
-    } catch (error) {
-      set({ error: error.message, loading: false })
+export const useKanbanStore = create<KanbanStore>()(
+  persist(
+    immer((set, get) => ({
+      cards: [],
+      columns: initialColumns,
+      loading: false,
+      error: null,
+
+      addCard: (columnId, cardData) => {
+        set((state) => {
+          const newCard: Card = {
+            id: `card-${Date.now()}`,
+            title: cardData.title || '',
+            description: cardData.description,
+            priority: cardData.priority || 'medium',
+            status: columnId as Status,
+            tags: cardData.tags || [],
+            assignee: cardData.assignee,
+            dueDate: cardData.dueDate,
+            createdAt: Date.now()
+          }
+          
+          state.cards.push(newCard)
+          
+          const column = state.columns.find(col => col.id === columnId)
+          if (column) {
+            column.cards.push(newCard.id)
+          }
+        })
+      },
+
+      updateCard: (id, updates) => {
+        set((state) => {
+          const cardIndex = state.cards.findIndex(c => c.id === id)
+          if (cardIndex !== -1) {
+            state.cards[cardIndex] = { ...state.cards[cardIndex], ...updates }
+          }
+        })
+      },
+
+      deleteCard: (id) => {
+        set((state) => {
+          state.cards = state.cards.filter(c => c.id !== id)
+          state.columns.forEach(column => {
+            column.cards = column.cards.filter(cardId => cardId !== id)
+          })
+        })
+      },
+
+      moveCard: (cardId, newColumnId, newPosition) => {
+        set((state) => {
+          // Remove card from current column
+          state.columns.forEach(column => {
+            column.cards = column.cards.filter(id => id !== cardId)
+          })
+          
+          // Add to new column at position
+          const targetColumn = state.columns.find(col => col.id === newColumnId)
+          if (targetColumn) {
+            targetColumn.cards.splice(newPosition, 0, cardId)
+          }
+          
+          // Update card status
+          const card = state.cards.find(c => c.id === cardId)
+          if (card) {
+            card.status = newColumnId as Status
+          }
+        })
+      },
+
+      resetBoard: () => {
+        set({
+          cards: [],
+          columns: initialColumns,
+          error: null
+        })
+      },
+
+      importData: (jsonString) => {
+        try {
+          const data = JSON.parse(jsonString)
+          set({
+            cards: data.cards || [],
+            columns: data.columns || initialColumns
+          })
+          return true
+        } catch {
+          set({ error: 'データのインポートに失敗しました' })
+          return false
+        }
+      },
+
+      exportData: () => {
+        const state = get()
+        return JSON.stringify({
+          cards: state.cards,
+          columns: state.columns,
+          exportedAt: new Date().toISOString()
+        }, null, 2)
+      }
+    })),
+    {
+      name: 'kanban-storage',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        cards: state.cards,
+        columns: state.columns
+      })
     }
-  },
-
-  addCard: async (columnId, cardData) => {
-    // Optimistic update
-    const tempCard = { ...cardData, id: `temp-${Date.now()}`, column_id: columnId }
-    set(state => ({ cards: [...state.cards, tempCard] }))
-    
-    try {
-      const newCard = await cardAPI.create({ ...cardData, column_id: columnId })
-      set(state => ({
-        cards: state.cards.map(c => c.id === tempCard.id ? newCard : c)
-      }))
-    } catch (error) {
-      // Rollback on error
-      set(state => ({
-        cards: state.cards.filter(c => c.id !== tempCard.id),
-        error: error.message
-      }))
-    }
-  },
-
-  // Other actions...
-}))
+  )
+)
 ```
 
 ## 4.5 エラー対応と自動修正
@@ -231,29 +348,30 @@ strictモードに対応させてください。
 
 ## 4.6 プロジェクトの仕上げ
 
-### ハンズオン課題5: フルスタックアプリの最終調整
+### ハンズオン課題5: かんばんボードアプリの最終調整
 
 **Agent（Agentモード）で総仕上げ：**
 
 ```
-フルスタックかんばんボードアプリの最終調整を行ってください：
+かんばんボードアプリの最終調整を行ってください：
 
-【バックエンド】
-1. SQLiteトランザクション処理の実装
-2. エラーハンドリングの強化
-3. バリデーションの追加
-4. ログ出力の実装
+【データ永続化】
+1. ローカルストレージの容量チェック機能
+2. データ圧縮機能の実装（大量カード対応）
+3. 自動バックアップ機能（定期的なエクスポート）
+4. データ復元機能の強化
 
 【フロントエンド】
 1. ローディング状態の実装
-2. エラー表示UI
-3. 空状態のUI
-4. アニメーション追加
-5. レスポンシブ対応
+2. エラー表示UI（トースト通知）
+3. 空状態のUI（カードがない時の表示）
+4. Framer Motionでアニメーション追加
+5. レスポンシブ対応（モバイル・タブレット）
 
-【統合テスト】
-1. APIエンドポイントの動作確認
-2. CRUD操作の検証
+【UX改善】
+1. ドラッグ&ドロップのビジュアルフィードバック強化
+2. キーボードショートカットの実装
+3. アクセシビリティ対応（ARIA属性）
 
 すべて自動で実行し、完了したら報告してください。
 ```
