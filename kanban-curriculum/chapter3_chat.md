@@ -70,34 +70,46 @@ return (
 )
 ```
 
-## 3.3 バックエンドAPIの実装
+## 3.3 Zustandで状態管理の実装
 
-### ハンズオン課題2: Express APIサーバーの構築
+### ハンズオン課題2: グローバル状態管理の構築
 
 **チャットで質問：**
 
 ```
-@backend/server.js @backend/routes/cards.js
+@src/store/kanbanStore.ts
+@src/types/kanban.ts
 
-Express + SQLiteでRESTful APIを実装してください：
+Zustandを使って状態管理を実装してください：
 
-1. GET /api/cards - 全カード取得
-2. POST /api/cards - カード作成
-3. PUT /api/cards/:id - カード更新
-4. DELETE /api/cards/:id - カード削除
-5. PUT /api/cards/:id/move - カード移動
+1. カードのCRUD操作
+2. ドラッグ&ドロップでのカード移動
+3. ローカルストレージへの自動保存
+4. フィルタリング・検索機能
+5. WIPリミットの管理
 
-better-sqlite3を使用して、エラーハンドリングも含めて実装してください。
+persistミドルウェアを使ってローカルストレージに保存してください。
 ```
 
-**生成されるAPIコード例：**
-```javascript
-// backend/server.js
-const express = require('express')
-const cors = require('cors')
-const Database = require('better-sqlite3')
+**生成されるストアコード例：**
+```typescript
+// src/store/kanbanStore.ts
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
-const app = express()
+interface KanbanStore {
+  cards: Card[]
+  columns: Column[]
+  
+  // Actions
+  addCard: (columnId: string, card: Partial<Card>) => void
+  updateCard: (id: string, updates: Partial<Card>) => void
+  deleteCard: (id: string) => void
+  moveCard: (cardId: string, targetColumnId: string, position: number) => void
+  setWipLimit: (columnId: string, limit: number) => void
+}
+
+export const useKanbanStore = create<KanbanStore>()(
 const db = new Database('kanban.db')
 
 app.use(cors())

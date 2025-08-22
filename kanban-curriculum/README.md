@@ -30,7 +30,6 @@
 
 - **Cursor**（最新版・2024年11月以降推奨）
 - **Node.js**（v18以上）
-- **SQLite3**
 - **Git**
 - 基本的なJavaScript/Reactの知識
 
@@ -51,13 +50,13 @@
 ### [第3章: チャット（Cmd+L）で複雑なロジック実装](./chapter3_chat.md)
 - チャット機能で対話的に開発
 - React Beautiful DnDのドラッグ&ドロップ実装
-- Express + SQLiteバックエンドAPI連携
+- Zustandでの状態管理実装
 - エラー解決をAIに相談
 
-### [第4章: Agent（Cmd+I）を使いこなす](./chapter4_composer.md)
+### [第4章: Agent（Cmd+I）を使いこなす](./chapter4_agent.md)
 - Agentモード：自律的なタスク実行とプロジェクト構築
 - Askモード：コードに関する質問と相談（読み取り専用）
-- バックエンド含む全体構築の自動化
+- ローカルストレージでのデータ永続化実装
 - その他：Customモードで独自ワークフローも定義可能
 
 ### [第5章: AIコードレビューで品質向上](./chapter5_review.md)
@@ -109,8 +108,8 @@ cd kanban-curriculum
 - ✅ 3つのカラム（To Do、Doing、Done）
 - ✅ カードのドラッグ&ドロップ
 - ✅ カードの作成・編集・削除
-- ✅ SQLiteデータベースでのデータ永続化
-- ✅ Express APIサーバー
+- ✅ ローカルストレージでのデータ永続化
+- ✅ 自動保存・リセット機能
 - ✅ レスポンシブデザイン
 - ✅ モダンなUI（shadcn/ui使用）
 
