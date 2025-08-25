@@ -1,69 +1,122 @@
-# React + TypeScript + Vite
+# 🎯 Cursorカリキュラム - カンバンボードアプリ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![カンバンボードアプリ](../kanban-curriculum/final-image.png)
 
-Currently, two official plugins are available:
+## 📖 概要
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+このプロジェクトは、**Cursorカリキュラムプロジェクト**の一環として構築されたモダンなカンバンボードアプリケーションです。CursorのAI支援開発機能を習得しながら、実用的で本番環境対応のアプリケーションを構築する実践的な学習体験を提供します。
 
-## Expanding the ESLint configuration
+## 🚀 プロジェクトの目的
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+このリポジトリには、Cursorカリキュラムを通じて開発された完全に機能するカンバンボードアプリケーションが含まれています。以下を実証しています：
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **AI駆動開発**: CursorのAgent、Ask、Customモードを使用して構築
+- **モダンな技術スタック**: React、TypeScript、Zustandによる状態管理
+- **ベストプラクティス**: クリーンアーキテクチャ、コンポーネントベース設計、効率的なコードパターン
+- **実践的な学習**: AI支援コーディングを学びながら実世界のアプリケーション開発
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## ✨ 機能
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### コア機能
+- **📋 3列カンバンボード**: To Do、Doing、Doneの列でタスク管理
+- **🎨 モダンなUI**: Tailwind CSSとshadcn/uiで構築された美しく応答性の高いインターフェース
+- **🔍 スマート検索**: すべての列にわたるリアルタイムタスクフィルタリング
+- **💾 永続的なストレージ**: データ永続化のためのローカルストレージ統合
+- **🎯 タスク管理**: 
+  - タスクの作成、編集、削除
+  - 列間のドラッグ＆ドロップ
+  - 優先度ラベルと色分け
+  - 詳細なタスクの説明
+
+### 技術的なハイライト
+- **状態管理**: 効率的でシンプルな状態管理のためのZustand
+- **コンポーネントアーキテクチャ**: モジュラーで再利用可能なReactコンポーネント
+- **型安全性**: 完全なTypeScript実装
+- **パフォーマンス**: Reactベストプラクティスによる最適化されたレンダリング
+- **レスポンシブデザイン**: デスクトップとモバイルデバイスでシームレスに動作
+
+## 🛠️ 技術スタック
+
+- **フロントエンドフレームワーク**: React 18 with TypeScript
+- **ビルドツール**: 超高速開発のためのVite
+- **スタイリング**: Tailwind CSS + shadcn/uiコンポーネント
+- **状態管理**: Zustand
+- **アイコン**: Lucide React
+- **開発ツール**: ESLint、Prettier（Cursor経由）
+
+## 📦 インストール
+
+1. リポジトリをクローン:
+```bash
+git clone https://github.com/yourusername/kanban-board-app.git
+cd kanban-board-app
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. 依存関係をインストール:
+```bash
+npm install
 ```
+
+3. 開発サーバーを起動:
+```bash
+npm run dev
+```
+
+4. ブラウザを開いて以下にアクセス:
+```
+http://localhost:5173
+```
+
+## 🎮 使い方
+
+### タスクの作成
+1. ヘッダーの**「+ 新規タスク」**ボタンをクリック
+2. タスクの詳細を入力：
+   - タイトル（必須）
+   - 説明（オプション）
+   - 優先度レベル
+   - 初期ステータス列
+3. **「タスクを作成」**をクリックしてボードに追加
+
+### タスクの管理
+- **編集**: タスクカードをクリックして編集ダイアログを開く
+- **削除**: タスク編集ダイアログ内の削除ボタンを使用
+- **移動**: 編集ダイアログでステータスを変更して列間を移動
+- **検索**: 検索バーを使用してすべての列のタスクをフィルタリング
+
+### データの永続化
+すべてのタスクは自動的にローカルストレージに保存され、セッション間でデータが保持されます。
+
+## 🎓 Cursorカリキュラムの旅
+
+このアプリケーションは、構造化されたCursorカリキュラムに従って構築されました：
+
+1. **第1章**: プロジェクトセットアップとCursor入門
+2. **第2章**: Tab補完とCmd+Kによるコンポーネント作成
+3. **第3章**: Zustandによる状態管理の実装
+4. **第4章**: Agentの自律機能のマスタリング
+5. **第5章**: AIコードレビューによる品質向上
+6. **第6章**: 高度なテクニックとトラブルシューティング
+
+各章は前章を基に構築され、この本番環境対応のカンバンボードを生み出す包括的な学習体験を作成します。
+
+## 🚧 今後の機能
+
+- [ ] 列間のドラッグ＆ドロップ機能
+- [ ] ユーザー認証とマルチユーザーサポート
+- [ ] SQLiteによるバックエンドAPI統合
+- [ ] タスクコメントと添付ファイル
+- [ ] 期限とリマインダー
+- [ ] エクスポート/インポート機能
+- [ ] ダークモード切り替え
+- [ ] 分析ダッシュボード
+
+
+## 📚 リソース
+
+- [Cursor ドキュメント](https://cursor.sh/docs)
+- [React ドキュメント](https://react.dev)
+- [Zustand ドキュメント](https://zustand-demo.pmnd.rs/)
+- [Tailwind CSS](https://tailwindcss.com)
+- [shadcn/ui](https://ui.shadcn.com)
+

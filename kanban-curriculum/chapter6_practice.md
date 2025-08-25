@@ -121,9 +121,74 @@ TypeScriptで型安全に実装してください。
 ```
 1. 不要なファイルを閉じる
 2. プロジェクトのインデックスを再構築
-   - Cmd+Shift+P → "Rebuild Index"
+   - Cmd+Shift+P → "Reload Window" または "Developer: Reload Window"
+   - または、Cursorを再起動
 3. モデルを変更（より軽いモデルを選択）
 4. .cursorignoreファイルで大きなファイルを除外
+```
+
+**.cursorignoreファイルの役割：**
+- Cursorがインデックス作成時に無視するファイル/ディレクトリを指定
+- .gitignoreと同じ形式で記述
+- パフォーマンス改善とコンテキストの質向上に効果的
+
+**.cursorignoreファイルの例：**
+```gitignore
+# ビルド成果物
+dist/
+build/
+out/
+*.min.js
+*.min.css
+
+# 依存関係
+node_modules/
+.pnp
+.pnp.js
+vendor/
+bower_components/
+
+# ログファイル
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 大きなメディアファイル
+*.mp4
+*.mp3
+*.mov
+*.avi
+*.zip
+*.tar.gz
+*.rar
+
+# 環境ファイル
+.env
+.env.local
+.env.production
+
+# IDE設定
+.idea/
+*.swp
+*.swo
+*~
+
+# OS関連
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# テスト関連
+coverage/
+.nyc_output/
+*.test.js.snap
+
+# 一時ファイル
+tmp/
+temp/
+cache/
 ```
 
 ## 6.3 .cursorrulesの最適化
