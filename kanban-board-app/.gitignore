@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# keep local only
+kanban-curriculum/INSTRUCTOR_GUIDE.md
