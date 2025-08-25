@@ -77,9 +77,8 @@ npm install
 
 【バックエンド】
 1. Express（APIサーバー）
-2. SQLite3とbetter-sqlite3（データベース）
-3. cors（CORS対応）
-4. nodemon（開発用）
+2. cors（CORS対応）
+3. nodemon（開発用）
 
 【フロントエンド】
 1. Tailwind CSS（スタイリング）
@@ -112,9 +111,8 @@ npm install
 ```
 backend/
 ├── server.js
-├── db/
-│   ├── database.js
-│   └── schema.sql
+├── store/
+│   └── dataStore.js
 └── routes/
     └── cards.js
 
@@ -142,7 +140,7 @@ src/
 
 ## Tech Stack
 - Frontend: React 18+ with TypeScript, Vite
-- Backend: Express + SQLite3
+- Backend: Express
 - Styling: Tailwind CSS
 - UI Components: shadcn/ui
 - Drag & Drop: React Beautiful DnD
@@ -156,18 +154,13 @@ src/
 - Custom hooks for logic
 - RESTful API design
 
-## Database
-- SQLite with better-sqlite3
-- Proper SQL queries (no raw string concatenation)
-- Transaction support for complex operations
-
 ## AI Instructions
 - Always use TypeScript
 - Prefer Tailwind classes over CSS files
 - Use shadcn/ui components when available
 - Implement proper error handling
 - Create API endpoints with Express
-- Use proper SQL parameterized queries
+- Use proper data validation
 ```
 
 **💡 ポイント**: このファイルによりCursorが一貫したコードを生成します。
@@ -211,21 +204,21 @@ function App() {
 export default App
 ```
 
-## 1.8 SQLiteデータベースの初期化
+## 1.8 データストアの初期化
 
-### ハンズオン課題5: データベースセットアップ
+### ハンズオン課題5: データストアセットアップ
 
 **チャット（Cmd+L）に以下を入力：**
 
 ```
-backend/db/database.jsとschema.sqlを作成して、
-SQLiteデータベースを初期化してください：
+backend/store/dataStore.jsを作成して、
+インメモリデータストアを初期化してください：
 
-1. cardsテーブルとcolumnsテーブルの作成
-2. 初期データ（3つのカラム）の挿入
-3. 接続処理の実装
+1. cardsとcolumnsのデータ構造を定義
+2. 初期データ（3つのカラム）の作成
+3. CRUD操作のメソッド実装
 
-better-sqlite3を使用してください。
+シンプルなJavaScriptオブジェクトで管理してください。
 ```
 
 ## 1.9 開発サーバーの起動
