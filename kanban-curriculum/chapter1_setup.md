@@ -137,7 +137,12 @@ npm install -D tailwindcss@^3.4.0 postcss autoprefixer
 
 1. `src/App.tsx`を開く
 2. 既存のコードを全削除
-3. 以下のコメントを入力してTabキー
+3. Tab補完の使い方：
+   - コメントを入力してTabキーで生成
+   - **実践的なコツ**: 一度に全部入れようとせず、段階的に補完を活用
+     - 例: `f`と入力→Tab→`function`が補完される
+     - 改行して`div`と入力→Tab→適切なJSX要素が補完される
+     - この繰り返しでコードを構築
 
 ```tsx
 // Create a simple kanban board layout with three columns: Todo, Doing, Done
