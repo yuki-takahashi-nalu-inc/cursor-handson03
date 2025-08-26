@@ -20,341 +20,150 @@
 | **Cmd+K** | 局所的な改善 | リファクタリング、バグ修正 |
 | **Tab補完** | 新規コード生成 | 関数作成、定型処理 |
 
-## 3.2 コンポーネントの最適化
+## 3.2 Cmd+Kで細かい改善を体験
 
-### ハンズオン課題1: KanbanCardの改善
+### ハンズオン課題1: ボタンのスタイル改善
 
-**1. `src/components/Card/KanbanCard.tsx`を開く**
-**2. コンポーネント全体を選択してCmd+K：**
-
-```
-このコンポーネントを改善：
-- React.memoで最適化
-- 優先度によるカラー分け（high=赤、medium=黄、low=緑）
-- ホバー時のツールチップ追加（作成日時表示）
-- ダブルクリックで編集モード切り替え
-- アニメーションの追加（spring効果）
-```
-
-**Cmd+Kが生成する改善例：**
+**1. TaskCardコンポーネントの削除ボタン部分を選択**
 ```tsx
-import React, { memo, useState } from 'react'
-import { motion } from 'framer-motion'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { GripVertical, Trash2, Edit2 } from 'lucide-react'
-import { format } from 'date-fns'
+// src/components/TaskCard.tsx の削除ボタン部分を選択
+<Button variant="ghost" size="sm" onClick={() => onDelete(task.id)}>
+  <Trash2 className="h-4 w-4" />
+</Button>
+```
 
-interface KanbanCardProps {
-  id: string
-  title: string
-  description: string
-  priority: 'high' | 'medium' | 'low'
-  createdAt: Date
-  onDelete: (id: string) => void
-  onEdit: (id: string) => void
-  isDragging?: boolean
+**2. 選択してCmd+K：**
+```
+削除ボタンに確認ダイアログを追加して、赤色のホバー効果も追加
+```
+
+### ハンズオン課題2: エラーメッセージの改善
+
+**1. TaskDialogのバリデーション部分を選択**
+```tsx
+// src/components/TaskDialog.tsx のエラー表示部分を選択
+if (!title.trim()) {
+  return
 }
-
-const priorityConfig = {
-  high: { color: 'bg-red-100 text-red-800 border-red-300', label: '高' },
-  medium: { color: 'bg-yellow-100 text-yellow-800 border-yellow-300', label: '中' },
-  low: { color: 'bg-green-100 text-green-800 border-green-300', label: '低' }
-}
-
-export const KanbanCard = memo(function KanbanCard({
-  id,
-  title,
-  description,
-  priority,
-  createdAt,
-  onDelete,
-  onEdit,
-  isDragging
-}: KanbanCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  return (
-    <TooltipProvider>
-      <motion.div
-        layout
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ 
-          opacity: isDragging ? 0.5 : 1, 
-          y: 0,
-          rotate: isDragging ? 2 : 0 
-        }}
-        exit={{ opacity: 0, y: -20 }}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        onHoverStart={() => setIsHovered(true)}
-        onHoverEnd={() => setIsHovered(false)}
-        onDoubleClick={() => onEdit(id)}
-      >
-        <Card className={`mb-2 cursor-move transition-all border-2 ${
-          priority === 'high' ? 'border-red-200' : 
-          priority === 'medium' ? 'border-yellow-200' : 
-          'border-green-200'
-        }`}>
-          <CardHeader className="pb-2">
-            <div className="flex items-start gap-2">
-              <GripVertical className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-start gap-2">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <h3 className="font-medium truncate">{title}</h3>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>作成日: {format(createdAt, 'yyyy/MM/dd HH:mm')}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <div className="flex gap-1 flex-shrink-0">
-                    {isHovered && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onEdit(id)
-                        }}
-                      >
-                        <Edit2 className="h-3 w-3" />
-                      </Button>
-                    )}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onDelete(id)
-                      }}
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-gray-600 mb-2 line-clamp-2">{description}</p>
-            <Badge className={priorityConfig[priority].color}>
-              優先度: {priorityConfig[priority].label}
-            </Badge>
-          </CardContent>
-        </Card>
-      </motion.div>
-    </TooltipProvider>
-  )
-})
 ```
 
-## 3.3 パフォーマンス改善
-
-### ハンズオン課題2: ストアの最適化
-
-**`src/store/kanbanStore.ts`の特定部分を選択してCmd+K：**
-
+**2. 選択してCmd+K：**
 ```
-選択部分を最適化：
-- セレクターパターンの実装
-- メモ化されたゲッター追加
-- 不要な再レンダリング防止
-- TypeScriptの型推論改善
+タイトルが空の時にtoastでエラーメッセージを表示
 ```
 
-### ハンズオン課題3: カスタムフックの作成
+### ハンズオン課題3: 検索機能の最適化
 
-**新規ファイル`src/hooks/useKanban.ts`を作成し、Tab補完：**
+**1. SearchBarコンポーネントの検索処理を選択**
+```tsx
+// src/components/SearchBar.tsx の onChange 部分を選択
+onChange={(e) => setSearchTerm(e.target.value)}
+```
+
+**2. 選択してCmd+K：**
+```
+debounceを使って300ms遅延で検索を実行するように改善
+```
+
+### ハンズオン課題4: アニメーションの追加
+
+**1. TaskCardのカード部分を選択**
+```tsx
+// src/components/TaskCard.tsx のCard部分を選択
+<Card className="mb-2">
+  {/* カード内容 */}
+</Card>
+```
+
+**2. 選択してCmd+K：**
+```
+ホバー時にカードが少し浮き上がるアニメーション（scale: 1.02, shadow変化）を追加
+```
+
+## 3.3 Tab補完で効率的にコードを生成
+
+### ハンズオン課題5: ユーティリティ関数の作成
+
+**新規ファイル作成してTab補完を活用：**
+
+1. `src/utils/taskHelpers.ts`を作成
+2. コメントを書いてTabキーで補完：
 
 ```typescript
-// Create custom hook for kanban operations with:
-// - Memoized selectors for cards by status
-// - Optimistic updates
-// - Error handling
-// - Loading states
-// - Undo/redo functionality
+// Function to calculate task completion percentage
+// Input: array of tasks
+// Output: percentage as number (0-100)
+export function calculateCompletionRate
+// ここでTabキーを押す
 ```
 
-**Tab補完が生成するコード例：**
+Tab補完が以下のような実装を生成：
 ```typescript
-import { useCallback, useMemo } from 'react'
-import { useKanbanStore } from '@/store/kanbanStore'
-import { Card, Status } from '@/types/kanban'
-
-export function useKanban() {
-  const {
-    cards,
-    columns,
-    addCard,
-    updateCard,
-    deleteCard,
-    moveCard,
-    history,
-    historyIndex,
-    undo,
-    redo
-  } = useKanbanStore()
-
-  const cardsByStatus = useMemo(() => {
-    const grouped: Record<Status, Card[]> = {
-      todo: [],
-      doing: [],
-      done: []
-    }
-    
-    cards.forEach(card => {
-      if (grouped[card.status]) {
-        grouped[card.status].push(card)
-      }
-    })
-    
-    return grouped
-  }, [cards])
-
-  const canUndo = historyIndex > 0
-  const canRedo = historyIndex < history.length - 1
-
-  const optimisticAddCard = useCallback(async (
-    status: Status,
-    cardData: Partial<Card>
-  ) => {
-    const tempId = `temp-${Date.now()}`
-    const optimisticCard = {
-      ...cardData,
-      id: tempId,
-      status
-    }
-    
-    addCard(status, optimisticCard)
-    
-    try {
-      // API call would go here
-      return true
-    } catch (error) {
-      deleteCard(tempId)
-      throw error
-    }
-  }, [addCard, deleteCard])
-
-  const getColumnCards = useCallback((columnId: string) => {
-    return cardsByStatus[columnId as Status] || []
-  }, [cardsByStatus])
-
-  const getWipLimit = useCallback((columnId: string) => {
-    const column = columns.find(col => col.id === columnId)
-    return column?.wipLimit
-  }, [columns])
-
-  const isOverWipLimit = useCallback((columnId: string) => {
-    const limit = getWipLimit(columnId)
-    if (!limit) return false
-    const cards = getColumnCards(columnId)
-    return cards.length >= limit
-  }, [getColumnCards, getWipLimit])
-
-  return {
-    cards,
-    columns,
-    cardsByStatus,
-    addCard: optimisticAddCard,
-    updateCard,
-    deleteCard,
-    moveCard,
-    undo,
-    redo,
-    canUndo,
-    canRedo,
-    getColumnCards,
-    isOverWipLimit
-  }
+export function calculateCompletionRate(tasks: Task[]): number {
+  if (tasks.length === 0) return 0
+  const completedTasks = tasks.filter(task => task.status === 'done')
+  return Math.round((completedTasks.length / tasks.length) * 100)
 }
 ```
 
-## 3.4 UIの細かい調整
+### ハンズオン課題6: 日付フォーマット関数の作成
 
-### ハンズオン課題4: アニメーションの洗練
+**Tab補完で日付処理を実装：**
 
-**各コンポーネントのアニメーション部分を選択してCmd+K：**
-
-```
-Framer Motionのアニメーションを改善：
-- staggerChildren でカードの順次表示
-- ドラッグ時のelastic効果
-- 削除時のscale + opacity アニメーション
-- レイアウトアニメーションの最適化
+```typescript
+// Function to format date to relative time (e.g., "2 hours ago", "yesterday")
+// Uses date-fns formatDistanceToNow
+export function formatRelativeTime
+// Tabキーで補完
 ```
 
-### ハンズオン課題5: エラー処理の追加
+### ハンズオン課題7: バリデーション関数の作成
 
-**エラー処理が必要な箇所を選択してCmd+K：**
-
-```
-エラー処理を追加：
-- try-catchブロック
-- エラー時のトースト表示
-- フォールバックUI
-- リトライロジック
+```typescript
+// Function to validate task title (min 3 chars, max 50 chars)
+// Returns { isValid: boolean, error?: string }
+export function validateTaskTitle
+// Tabキーで補完
 ```
 
-## 3.5 アクセシビリティの改善
+## 3.4 実践的な改善例
 
-### ハンズオン課題6: ARIA属性とキーボード操作
+### ハンズオン課題8: 優先度バッジの色分け
 
-**コンポーネントを選択してCmd+K：**
-
-```
-アクセシビリティを改善：
-- 適切なARIA属性（role, aria-label, aria-describedby）
-- キーボードナビゲーション（Tab, Enter, Escape）
-- フォーカス管理（focus-visible）
-- スクリーンリーダー対応のテキスト
-```
-
-## 3.6 コード品質の向上
-
-### ハンズオン課題7: リファクタリング
-
-**重複コードや長い関数を選択してCmd+K：**
+**TaskCardの優先度表示部分を選択してCmd+K：**
 
 ```
-このコードをリファクタリング：
-- 共通ロジックを抽出
-- 定数を別ファイルに移動
-- 関数を小さく分割
-- 命名規則の統一
+優先度によって色を変更：high=赤、medium=黄、low=緑
 ```
 
-### ハンズオン課題8: TypeScript型の強化
+### ハンズオン課題9: タスクカウント表示の追加
 
-**型定義を選択してCmd+K：**
-
-```
-TypeScript型を改善：
-- ジェネリック型の活用
-- ユーティリティ型（Pick, Omit, Partial）
-- 型ガードの実装
-- as const アサーション
-```
-
-## 3.7 テスト可能なコードへの改善
-
-### ハンズオン課題9: テスタビリティの向上
-
-**関数やコンポーネントを選択してCmd+K：**
+**Columnコンポーネントのヘッダー部分を選択してCmd+K：**
 
 ```
-テストしやすいコードに改善：
-- 純粋関数への分離
-- 依存性注入パターン
-- モック可能な構造
-- エッジケースの考慮
+タスク数をヘッダーに表示（例：To Do (3)）
+```
+
+## 3.5 よく使うCmd+Kのパターン
+
+### パターン1: スタイルの微調整
+```
+選択部分のpaddingを増やしてボーダーを丸くする
+```
+
+### パターン2: 条件分岐の追加
+```
+タスクが0件の時は「タスクがありません」と表示
+```
+
+### パターン3: ローディング状態の追加
+```
+データ取得中はスケルトンローダーを表示
+```
+
+### パターン4: ツールチップの追加
+```
+アイコンにホバーした時に説明文を表示
 ```
 
 ## 📝 この章で学んだこと
@@ -434,10 +243,10 @@ Cmd+KとTab補完で以下を改善：
 
 ### 課題チェックリスト
 
-- [ ] コンポーネントの最適化
-- [ ] カスタムフックの作成
-- [ ] アニメーションの洗練
-- [ ] エラー処理の追加
-- [ ] アクセシビリティ改善
-- [ ] TypeScript型の強化
-- [ ] コードのリファクタリング
+- [ ] 削除ボタンに確認ダイアログを追加
+- [ ] エラーメッセージのtoast表示
+- [ ] 検索のdebounce処理
+- [ ] ホバーアニメーション追加
+- [ ] Tab補完でユーティリティ関数作成
+- [ ] 優先度バッジの色分け
+- [ ] タスクカウント表示
