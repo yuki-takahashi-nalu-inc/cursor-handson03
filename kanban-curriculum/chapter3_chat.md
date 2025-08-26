@@ -168,93 +168,78 @@ Unable to find draggable with id: card-1
 
 ## 3.5 フロントエンドとAPIの連携
 
-### ハンズオン課題4: API通信の実装
+### ハンズオン課題4: データのインポート/エクスポート機能
 
 **チャットで依頼：**
 
 ```
-@src/services/api.js
+@src/utils/dataExport.ts
 
-axiosを使ってバックエンドAPIと通信するサービスを作成してください：
+ローカルストレージのデータをJSON形式でエクスポート/インポートする機能を実装してください：
 
-1. カード一覧の取得
-2. カードの作成
-3. カードの更新  
-4. カードの削除
-5. カードの移動
+1. 現在の状態をJSONファイルとしてダウンロード
+2. JSONファイルをアップロードしてデータを復元
+3. データのバックアップと復元
+4. データフォーマットの検証
 
 エラーハンドリングも含めて実装してください。
 ```
 
-**生成されるAPIサービス例：**
-```javascript
-// src/services/api.js
-import axios from 'axios'
+**生成されるユーティリティ例：**
+```typescript
+// src/utils/dataExport.ts
+import { useKanbanStore } from '@/store/kanbanStore'
 
-const API_BASE_URL = 'http://localhost:3001/api'
+export const dataExport = {
+  // データをJSONとしてエクスポート
+  exportToJSON() {
+    const state = useKanbanStore.getState()
+    const data = {
+      cards: state.cards,
+      columns: state.columns,
+      exportedAt: new Date().toISOString(),
+      version: '1.0.0'
+    }
+    
+    const blob = new Blob([JSON.stringify(data, null, 2)], { 
+      type: 'application/json' 
+    })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `kanban-backup-${Date.now()}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  },
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-
-export const cardAPI = {
-  // 全カード取得
-  async getAll() {
+  // JSONファイルからインポート
+  async importFromJSON(file: File) {
     try {
-      const response = await api.get('/cards')
-      return response.data
+      const text = await file.text()
+      const data = JSON.parse(text)
+      
+      // データ検証
+      if (!data.cards || !data.columns || !data.version) {
+        throw new Error('Invalid data format')
+      }
+      
+      // ストアにインポート
+      const store = useKanbanStore.getState()
+      store.importData(data)
+      
+      return { success: true, message: 'Data imported successfully' }
     } catch (error) {
-      console.error('Failed to fetch cards:', error)
+      console.error('Failed to import data:', error)
       throw error
     }
   },
 
-  // カード作成
-  async create(card) {
-    try {
-      const response = await api.post('/cards', card)
-      return response.data
-    } catch (error) {
-      console.error('Failed to create card:', error)
-      throw error
-    }
-  },
-
-  // カード更新
-  async update(id, updates) {
-    try {
-      const response = await api.put(`/cards/${id}`, updates)
-      return response.data
-    } catch (error) {
-      console.error('Failed to update card:', error)
-      throw error
-    }
-  },
-
-  // カード削除
-  async delete(id) {
-    try {
-      await api.delete(`/cards/${id}`)
-    } catch (error) {
-      console.error('Failed to delete card:', error)
-      throw error
-    }
-  },
-
-  // カード移動
-  async move(id, targetColumnId, position) {
-    try {
-      const response = await api.put(`/cards/${id}/move`, {
-        column_id: targetColumnId,
-        position
-      })
-      return response.data
-    } catch (error) {
-      console.error('Failed to move card:', error)
-      throw error
+  // データクリア
+  clearAllData() {
+    if (confirm('Are you sure you want to clear all data?')) {
+      const store = useKanbanStore.getState()
+      store.clearAll()
+      localStorage.removeItem('kanban-storage')
     }
   }
 }
