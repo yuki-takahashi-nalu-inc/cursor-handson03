@@ -67,7 +67,7 @@ npm install
 ```
 ### 実行結果イメージ
 
-![1-3](./img/1-3.png)
+<img src="./img/1-3.png" alt="1-3" width="400" />
 
 
 ## 1.4 必要なライブラリの導入
@@ -202,7 +202,7 @@ TypeScriptで型安全に実装してください。
 npm run dev
 ```
 
-![1-8](./img/1-8.png)
+<img src="./img/1-8.png" alt="1-8" width="400" />
 
 ブラウザで`http://localhost:5173`を開き、3つのカラムが表示されることを確認。
 
