@@ -110,39 +110,34 @@ interface KanbanStore {
 }
 
 export const useKanbanStore = create<KanbanStore>()(
-const db = new Database('kanban.db')
-
-app.use(cors())
-app.use(express.json())
-
-// カード一覧取得
-app.get('/api/cards', (req, res) => {
-  try {
-    const cards = db.prepare('SELECT * FROM cards ORDER BY column_id, position').all()
-    res.json(cards)
-  } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
-})
-
-// カード作成
-app.post('/api/cards', (req, res) => {
-  const { title, description, priority, column_id } = req.body
-  try {
-    const stmt = db.prepare(`
-      INSERT INTO cards (id, title, description, priority, column_id, position)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `)
-    const id = Date.now().toString()
-    const position = db.prepare('SELECT MAX(position) as max FROM cards WHERE column_id = ?')
-      .get(column_id)?.max || 0
-    
-    stmt.run(id, title, description, priority, column_id, position + 1)
-    res.json({ id, title, description, priority, column_id, position: position + 1 })
-  } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
-})
+  persist(
+    (set, get) => ({
+      cards: [],
+      columns: [
+        { id: 'todo', title: 'To Do', wipLimit: 5 },
+        { id: 'doing', title: 'Doing', wipLimit: 3 },
+        { id: 'done', title: 'Done', wipLimit: null },
+      ],
+      
+      addCard: (columnId, card) => set((state) => ({
+        cards: [...state.cards, { 
+          id: Date.now().toString(),
+          columnId, 
+          ...card 
+        }]
+      })),
+      
+      moveCard: (cardId, targetColumnId, position) => {
+        // カード移動のロジック
+      },
+      
+      // その他のアクション...
+    }),
+    {
+      name: 'kanban-storage',
+    }
+  )
+)
 ```
 
 ## 3.4 エラー解決の実践
