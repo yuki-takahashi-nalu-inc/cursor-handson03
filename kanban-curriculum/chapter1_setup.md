@@ -79,11 +79,14 @@ npm install
 ```
 フロントエンドの必要なライブラリをインストールしてください：
 
-1. Tailwind CSS（スタイリング）
+1. Tailwind CSS v3（スタイリング） - バージョン3を明示的に指定
 2. shadcn/ui（UIコンポーネント）  
 3. Framer Motion（アニメーション・ドラッグ&ドロップ）
 4. Zustand（状態管理）
 5. Lucide React（アイコン）
+
+重要: Tailwind CSSはv3を使用します。以下のコマンドでインストール：
+npm install -D tailwindcss@^3.4.0 postcss autoprefixer
 
 必要な設定ファイルの作成と、package.jsonの更新もお願いします。
 ```
