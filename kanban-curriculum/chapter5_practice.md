@@ -256,16 +256,8 @@ src/
 ### チーム用設定の共有
 
 #### プロジェクトレベルの設定
-```json
-// .vscode/settings.json
-{
-  "cursor.chat.defaultPrompts": {
-    "review": "コードレビューを実施してください",
-    "test": "このコードのテストを作成してください",
-    "refactor": "このコードをリファクタリングしてください"
-  }
-}
-```
+最近のCursorでは、これまで使用してきた`.cursorrules`に加えて、`.cursor/rules`ディレクトリでAIの振る舞いをより細かく制御することも推奨されています。
+詳細は[公式ドキュメント](https://docs.cursor.com/ja/context/rules)を参照してください。
 
 #### コードレビューのワークフロー
 ```
