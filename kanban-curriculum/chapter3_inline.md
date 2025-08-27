@@ -67,49 +67,92 @@ statusがdoneの時、カード全体を少し薄くして完了感を出して
 
 ## 3.3 Tab補完で効率的にコードを生成
 
-### ハンズオン課題4: ユーティリティ関数の作成
+### ハンズオン課題4: 既存の関数にコメントをTab補完で追加
 
-**新規ファイル作成してTab補完を活用：**
+**既存のコンポーネントや関数にJSDocコメントを追加：**
 
-1. `src/utils/taskHelpers.ts`を作成
-2. コメントを書いてTabキーで補完：
+1. 任意のコンポーネントファイル（例：`src/components/TaskCard.tsx`や`src/App.tsx`）を開く
+2. ファイル内の関数を探す（例：コンポーネント関数、イベントハンドラ等）
+3. その関数の直前に `/**` と入力してEnterキーを押し、Tabキーで補完：
 
 ```typescript
-// Function to calculate task completion percentage
-// Input: array of tasks
-// Output: percentage as number (0-100)
-export function calculateCompletionRate
-// ここでTabキーを押す
-```
+// 例：既存の関数の上に以下を入力
+/**
+// ここでTabキーを押すとコメントが自動生成される
 
-Tab補完が以下のような実装を生成：
-```typescript
-export function calculateCompletionRate(tasks: Task[]): number {
-  if (tasks.length === 0) return 0
-  const completedTasks = tasks.filter(task => task.status === 'done')
-  return Math.round((completedTasks.length / tasks.length) * 100)
+function handleDelete(id: string) {
+  // 既存の処理
 }
 ```
 
-### ハンズオン課題5: 日付フォーマット関数の作成
-
-**Tab補完で日付処理を実装：**
-
+Tab補完が関数の内容を解析して、以下のようなコメントを生成：
 ```typescript
-// Function to format date to relative time (e.g., "2 hours ago", "yesterday")
-// Uses date-fns formatDistanceToNow
-export function formatRelativeTime
-// Tabキーで補完
+/**
+ * タスクを削除する
+ * @param id - 削除するタスクのID
+ */
+function handleDelete(id: string) {
+  // 既存の処理
+}
 ```
 
-### ハンズオン課題6: バリデーション関数の作成
+**ポイント：**
+- `/**` と入力するとJSDoc形式のコメントが始まる
+- Tabキーで関数の内容に応じたコメントを自動生成
+- 関数名、パラメータ、処理内容から適切な説明を推測
+
+### ハンズオン課題5: コメントから関数を生成
+
+**コメントを書いてから、そのコメントに基づいて関数を生成：**
+
+1. 使用中のコンポーネントファイル（例：`src/components/TaskCard.tsx`）を開く
+2. コンポーネントの外側（import文の後）に以下のコメントを書いて、その下でTabキーを押して関数を生成：
 
 ```typescript
-// Function to validate task title (min 3 chars, max 50 chars)
-// Returns { isValid: boolean, error?: string }
-export function validateTaskTitle
-// Tabキーで補完
+/**
+ * タスクの優先度に基づいて色を返す関数
+ * @param priority - タスクの優先度 (high, medium, low)
+ * @returns Tailwind CSSのカラークラス名
+ */
+function getPriorityColor
+// ここでTabキーを押す
 ```
+
+Tab補完が以下のような関数を生成：
+```typescript
+function getPriorityColor(priority: string): string {
+  switch (priority) {
+    case 'high':
+      return 'text-red-600 bg-red-100'
+    case 'medium':
+      return 'text-yellow-600 bg-yellow-100'
+    case 'low':
+      return 'text-green-600 bg-green-100'
+    default:
+      return 'text-gray-600 bg-gray-100'
+  }
+}
+```
+
+### ハンズオン課題6: 日付フォーマット関数を生成
+
+**日付関連のユーティリティ関数をコメントから生成：**
+
+1. 既存のコンポーネントファイル内（import文の後）に追加
+2. 以下のコメントを書いてTabキーで補完：
+
+```typescript
+/**
+ * 日付を日本語の相対表現で返す
+ * 例: "今日", "明日", "3日後"
+ * @param date - 対象の日付
+ * @returns 日本語の相対日付表現
+ */
+function getRelativeDateString
+// ここでTabキーを押す
+```
+
+**このハンズオンでの注意：** Tab補完の練習のため、上記の例では`export`を付けていません。実際のプロジェクトでは必要に応じて`export`を使い分けてください。
 
 ## 3.4 実践的な改善例
 
@@ -186,22 +229,35 @@ export function validateTaskTitle
 
 ### Tab補完のコツ
 
-1. **明確なコメント**
+1. **明確な日本語コメント**
 ```typescript
-// Create memoized selector for filtering cards by status and priority
-// with proper TypeScript types and error handling
+// タスクのステータスによってアイコンを返す関数
+// todo: 時計アイコン、doing: 実行中アイコン、done: チェックマーク
 ```
 
-2. **関数シグネチャから開始**
+2. **JSDocコメントから関数を生成**
 ```typescript
-function validateCard(card: Partial<Card>): ValidationResult {
-  // Tab here
+/**
+ * タスクの期限までの残り日数を計算
+ * @param dueDate - 期限日
+ * @returns 残り日数（過ぎている場合は負の値）
+ */
+function getDaysUntilDue
+// ここでTabキーを押す
+```
+
+3. **型定義からの補完**
+```typescript
+interface TaskFilter {
+  status?: string
+  priority?: string
+  assignee?: string
 }
-```
 
-3. **期待する実装を示唆**
-```typescript
-// Implement debounced search with 300ms delay using lodash
+// フィルター条件に基づいてタスクを絞り込む
+function filterTasks(tasks: Task[], filter: TaskFilter): Task[] {
+  // ここでTabキーを押す
+}
 ```
 
 ## 🎯 チャレンジ課題
@@ -228,10 +284,11 @@ Cmd+KとTab補完で以下を改善：
 
 ### 課題チェックリスト
 
-- [ ] 削除ボタンに確認ダイアログを追加
-- [ ] エラーメッセージのtoast表示
-- [ ] 検索のdebounce処理
-- [ ] ホバーアニメーション追加
-- [ ] Tab補完でユーティリティ関数作成
-- [ ] 優先度バッジの色分け
-- [ ] タスクカウント表示
+- [ ] 削除ボタンに確認ダイアログを追加（Cmd+K）
+- [ ] タイトルのスタイル改善（Cmd+K）
+- [ ] 完了タスクのスタイル変更（Cmd+K）
+- [ ] 関数のコメントをTab補完で追加
+- [ ] コメントから関数を生成（Tab補完）
+- [ ] 日付フォーマット関数を生成（Tab補完）
+- [ ] 優先度バッジの色分け（Cmd+K）
+- [ ] タスクカウント表示（Cmd+K）
