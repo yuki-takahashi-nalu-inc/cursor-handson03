@@ -328,7 +328,8 @@ AIレビューを活用して：
 1. Lighthouse スコア100点を目指す
 2. TypeScript strictモード完全対応
 3. 0 ESLintエラー達成
-4. テストカバレッジ80%以上
+4. バンドルサイズを500KB以下に最適化
+5. React Developer Toolsで不要な再レンダリングを0に
 
 ## 🚀 次の章へ
 
