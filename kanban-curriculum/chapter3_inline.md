@@ -34,38 +34,23 @@
 
 **2. 選択してCmd+K：**
 ```
-削除ボタンに確認ダイアログを追加して、赤色のホバー効果も追加
+確認メッセージを表示して
 ```
 
-### ハンズオン課題2: エラーメッセージの改善
+### ハンズオン課題2: タイトルのスタイル改善
 
-**1. TaskDialogのバリデーション部分を選択**
+**1. TaskCardコンポーネントのタイトル部分を選択**
 ```tsx
-// src/components/TaskDialog.tsx のエラー表示部分を選択
-if (!title.trim()) {
-  return
-}
+// src/components/TaskCard.tsx のCardTitle部分を選択
+<CardTitle>{task.title}</CardTitle>
 ```
 
 **2. 選択してCmd+K：**
 ```
-タイトルが空の時にtoastでエラーメッセージを表示
+文字を少し大きくして、優先度に応じて色を変えて
 ```
 
-### ハンズオン課題3: 検索機能の最適化
-
-**1. SearchBarコンポーネントの検索処理を選択**
-```tsx
-// src/components/SearchBar.tsx の onChange 部分を選択
-onChange={(e) => setSearchTerm(e.target.value)}
-```
-
-**2. 選択してCmd+K：**
-```
-debounceを使って300ms遅延で検索を実行するように改善
-```
-
-### ハンズオン課題4: アニメーションの追加
+### ハンズオン課題3: 完了タスクのスタイル変更
 
 **1. TaskCardのカード部分を選択**
 ```tsx
@@ -77,12 +62,12 @@ debounceを使って300ms遅延で検索を実行するように改善
 
 **2. 選択してCmd+K：**
 ```
-ホバー時にカードが少し浮き上がるアニメーション（scale: 1.02, shadow変化）を追加
+statusがdoneの時、カード全体を少し薄くして完了感を出して
 ```
 
 ## 3.3 Tab補完で効率的にコードを生成
 
-### ハンズオン課題5: ユーティリティ関数の作成
+### ハンズオン課題4: ユーティリティ関数の作成
 
 **新規ファイル作成してTab補完を活用：**
 
@@ -106,7 +91,7 @@ export function calculateCompletionRate(tasks: Task[]): number {
 }
 ```
 
-### ハンズオン課題6: 日付フォーマット関数の作成
+### ハンズオン課題5: 日付フォーマット関数の作成
 
 **Tab補完で日付処理を実装：**
 
@@ -117,7 +102,7 @@ export function formatRelativeTime
 // Tabキーで補完
 ```
 
-### ハンズオン課題7: バリデーション関数の作成
+### ハンズオン課題6: バリデーション関数の作成
 
 ```typescript
 // Function to validate task title (min 3 chars, max 50 chars)
@@ -128,7 +113,7 @@ export function validateTaskTitle
 
 ## 3.4 実践的な改善例
 
-### ハンズオン課題8: 優先度バッジの色分け
+### ハンズオン課題7: 優先度バッジの色分け
 
 **TaskCardの優先度表示部分を選択してCmd+K：**
 
@@ -136,7 +121,7 @@ export function validateTaskTitle
 優先度によって色を変更：high=赤、medium=黄、low=緑
 ```
 
-### ハンズオン課題9: タスクカウント表示の追加
+### ハンズオン課題8: タスクカウント表示の追加
 
 **Columnコンポーネントのヘッダー部分を選択してCmd+K：**
 
