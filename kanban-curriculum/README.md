@@ -30,10 +30,30 @@
 
 ## 🛠 必要な環境
 
-- **Cursor**（最新版・2025年8月以降推奨）
+- **Cursor**（最新版・2025年9月以降推奨）
 - **Node.js**（v18以上）
 - **Git**
 - 基本的なJavaScript/Reactの知識
+
+### 環境確認コマンド
+
+開始前に以下のコマンドで環境を確認してください：
+
+```bash
+# Node.jsのバージョン確認（v18以上が必要）
+node --version
+
+# npmのバージョン確認（Node.jsに同梱）
+npm --version
+
+# npxのバージョン確認（Node.jsに同梱、shadcn/ui等のCLI実行に必要）
+npx --version
+
+# Gitのバージョン確認
+git --version
+```
+
+**重要：** `npm`と`npx`はNode.jsをインストールすると自動的に使えるようになります
 
 ## 📖 カリキュラム構成
 

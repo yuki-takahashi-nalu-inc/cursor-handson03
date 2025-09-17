@@ -1,4 +1,4 @@
-# 🚀 Cursor完全マスターカリキュラム
+# 🚀 Cursorマスターカリキュラム
 
 ![カンバンボードアプリ](./kanban-curriculum/img/final-image.png)
 
