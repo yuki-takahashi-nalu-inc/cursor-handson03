@@ -6,7 +6,26 @@
 
 - **想定**: Node.jsを用いたフロントエンドハンズオン（Vite、shadcn/ui など）
 - **必須条件**: Node.js v18以上、npm/npx/Git が使用可能、npmレジストリへ到達可能
-- **判定基準**: STEP 1〜5すべて合格 → 開始可（STEP 6は本番相当の通し検証として推奨）
+- **判定基準**: STEP 0〜5すべて合格 → 開始可（STEP 6は本番相当の通し検証として推奨）
+- **Windowsユーザー**: 必ずSTEP 0でCursorのターミナル設定を確認してください
+
+---
+
+## STEP 0. Cursorのターミナル設定（Windowsのみ）
+
+**目的**: WindowsでCursorのターミナルがPowerShellを使用するように設定
+**合格基準**: Cursorのターミナルでnpmコマンドが実行可能
+
+### Windows - Cursorの設定手順
+
+1. Cursorを起動
+2. `Ctrl + ,` で設定を開く
+3. 検索ボックスに「terminal.integrated.defaultProfile.windows」と入力
+4. 「PowerShell」を選択（Git BashやCommand Promptではなく）
+5. Cursorを再起動
+6. `Ctrl + J` でターミナルを開き、PowerShellが起動することを確認
+
+> **注意**: WindowsではPowerShellを推奨。Git BashやWSLではnpmコマンドの動作が異なる場合があります。
 
 ---
 
@@ -181,6 +200,7 @@ rm -rf "$dir"
 
 参加者は以下のチェックリストで確認結果を記録してください：
 
+- [ ] STEP 0:（Windowsのみ）CursorのターミナルがPowerShellに設定済み
 - [ ] STEP 1: Node.js v18以上、Git、npm、npxが利用可能
 - [ ] STEP 2: npmレジストリへの接続が可能
 - [ ] STEP 3: 一時ディレクトリの作成・移動が可能
