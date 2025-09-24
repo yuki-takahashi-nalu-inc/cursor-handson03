@@ -25,8 +25,8 @@ function App() {
         </div>
       </div>
       <TaskDialog 
-        open={isTaskDialogOpen}
-        onOpenChange={setIsTaskDialogOpen}
+        isOpen={isTaskDialogOpen}
+        onClose={() => setIsTaskDialogOpen(false)}
         task={editingTask}
       />
     </div>
