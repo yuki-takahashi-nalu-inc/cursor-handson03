@@ -71,7 +71,7 @@ TypeScriptで型安全に実装してください。
 
 2. ファイルの拡張子を確認（.tsx, .ts）
 
-3. .cursorrulesファイルでプロジェクトのコンテキストを明確に
+3. プロジェクトのRules設定でコンテキストを明確に（Settings → Cursor Rules）
 
 4. Settings → Features → Auto-completion を確認
 ```
@@ -113,144 +113,113 @@ TypeScriptで型安全に実装してください。
 このエラーを修正してください。」
 ```
 
-### トラブル4: パフォーマンスが遅い
 
-**症状：**
-- Cursorの応答が遅い
-- コード生成に時間がかかる
+## 6.3 Cursor Rulesを活用する
 
-**解決法：**
-```
-1. 不要なファイルを閉じる
-2. プロジェクトのインデックスを再構築
-   - Cmd+Shift+P → "Reload Window" または "Developer: Reload Window"
-   - または、Cursorを再起動
-3. モデルを変更（より軽いモデルを選択）
-4. .cursorignoreファイルで大きなファイルを除外
-```
+配置したルールがそのディレクトリ以下のファイルに適用されます。
 
-**.cursorignoreファイルの役割：**
-- Cursorがインデックス作成時に無視するファイル/ディレクトリを指定
-- .gitignoreと同じ形式で記述
-- パフォーマンス改善とコンテキストの質向上に効果的
+### Cursor Rulesの例 (プロジェクト固有のルール)
 
-**.cursorignoreファイルの例：**
-```gitignore
-# ビルド成果物
-dist/
-build/
-out/
-*.min.js
-*.min.css
+```md
+---
+alwaysApply: true
+description: DRY原則に基づくコード品質向上のためのルール
+---
 
-# 依存関係
-node_modules/
-.pnp
-.pnp.js
-vendor/
-bower_components/
+# DRY原則（Don't Repeat Yourself）ガイドライン
 
-# ログファイル
-*.log
-logs/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+## 基本原則
+- **重複を避ける**: 同じロジック、データ、設定を複数箇所に書かない
+- **単一責任**: 各関数、コンポーネント、モジュールは一つの責任を持つ
+- **再利用性**: 共通の機能は抽象化して再利用可能にする
 
-# 大きなメディアファイル
-*.mp4
-*.mp3
-*.mov
-*.avi
-*.zip
-*.tar.gz
-*.rar
+## 型定義の重複回避
+- 型定義は [types/kanban.ts](mdc:kanban-board-app/src/types/kanban.ts) に集約
+- インターフェースや型エイリアスは一度定義したら再利用
+- 新しい型が必要な場合は、既存の型を拡張または組み合わせる
 
-# 環境ファイル
-.env
-.env.local
-.env.production
+## 状態管理の一元化
+- アプリケーション状態は [store/kanbanStore.ts](mdc:kanban-board-app/src/store/kanbanStore.ts) で管理
+- コンポーネント間での状態共有はZustandストアを使用
+- ローカル状態は最小限に抑える
 
-# IDE設定
-.idea/
-*.swp
-*.swo
-*~
+## ユーティリティ関数の共通化
+- 共通のロジックは [lib/utils.ts](mdc:kanban-board-app/src/lib/utils.ts) に配置
+- 日付処理、文字列操作、バリデーションなどは再利用可能な関数として作成
+- 同じ処理を複数箇所で行う場合は、必ず共通関数を作成
 
-# OS関連
-.DS_Store
-Thumbs.db
-Desktop.ini
+## コンポーネント設計
+- UIコンポーネントは [components/ui/](mdc:kanban-board-app/src/components/ui/) に集約
+- 似たようなUI要素は共通コンポーネントとして抽象化
+- propsの型定義は再利用可能な形で設計
 
-# テスト関連
-coverage/
-.nyc_output/
-*.test.js.snap
+## 定数とマジックナンバーの管理
+- ハードコードされた値は定数として定義
+- 設定値は環境変数または設定ファイルで管理
+- 色、サイズ、間隔などのデザイン値はTailwindの設定で統一
 
-# 一時ファイル
-tmp/
-temp/
-cache/
+## コード重複の検出と修正
+- 3回以上同じコードが出現する場合は必ず共通化を検討
+- 似たような処理は抽象化レベルを上げて汎用化
+- 条件分岐の重複は戦略パターンやファクトリーパターンで解決
+
+## ファイル構造の統一
+- 同じ種類のファイルは同じディレクトリに配置
+- インポートパスは相対パスではなく絶対パスを使用
+- ファイル名は機能を表す明確な名前にする
 ```
 
-## 6.3 .cursorrulesの最適化
+### Cursor Rulesの例 (テストファイルのルール)
 
-### 効果的な.cursorrulesの書き方
+```md
+---
+alwaysApply: true
+description: カバレッジを意識したテスト戦略とベストプラクティス
+---
 
-```text
-# Project: Kanban Board Application
+# テストカバレッジ戦略
 
-## Project Context
-This is a kanban board with drag-and-drop functionality.
-Main features: Create, move, and delete cards across columns.
+## テストの種類とカバレッジ目標
+- **単体テスト**: 関数・コンポーネントレベルで90%以上のカバレッジ
+- **統合テスト**: ユーザーフロー全体で80%以上のカバレッジ
+- **E2Eテスト**: 主要な機能で100%のカバレッジ
 
-## Tech Stack
-- React 18 with TypeScript (strict mode)
-- Vite for build
-- Tailwind CSS for styling
-- shadcn/ui for UI components
-- React Beautiful DnD for drag-drop
-- Zustand for state management
+## テストファイルの配置
+src/ディレクトリ内にテストファイルを配置:
+- components/TaskCard.tsx → components/TaskCard.test.tsx
+- store/kanbanStore.ts → store/kanbanStore.test.ts  
+- lib/utils.ts → lib/utils.test.ts
+- 各コンポーネントに対応する.test.tsxファイルを作成
 
-## Code Generation Rules
+## 必須テスト対象
+- [store/kanbanStore.ts](mdc:kanban-board-app/src/store/kanbanStore.ts) - 状態管理ロジック
+- [lib/utils.ts](mdc:kanban-board-app/src/lib/utils.ts) - ユーティリティ関数
+- [types/kanban.ts](mdc:kanban-board-app/src/types/kanban.ts) - 型定義のバリデーション
+- 全Reactコンポーネント - レンダリングとユーザーインタラクション
 
-### Always Use
-- TypeScript with explicit types (no any)
-- Functional components with hooks
-- Tailwind classes instead of CSS files
-- shadcn/ui components when available
+## カバレッジ測定の設定
+package.jsonに以下のスクリプトを追加:
+- "test": "vitest"
+- "test:coverage": "vitest --coverage" 
+- "test:ui": "vitest --ui"
 
-### Never Use
-- Class components
-- Inline styles
-- console.log in production code
-- var keyword (use const/let)
+## テストの優先順位
+1. **Critical Path**: タスクの作成、更新、削除、移動
+2. **Business Logic**: フィルタリング、検索、WIP制限
+3. **Edge Cases**: 空の状態、エラーハンドリング
+4. **UI Interactions**: クリック、ドラッグ&ドロップ、フォーム入力
 
-## File Structure
-src/
-  components/   # React components
-  hooks/        # Custom hooks
-  store/        # Zustand stores
-  types/        # TypeScript types
-  utils/        # Utility functions
+## カバレッジレポートの活用
+- 未テストのコードを特定し、優先度を付けてテストを追加
+- ブランチカバレッジを重視（if文、switch文の全分岐をテスト）
+- 関数カバレッジで未実行の関数を特定
+- 行カバレッジでデッドコードを発見
 
-## Best Practices
-- Memoize expensive components
-- Handle errors with try-catch
-- Add loading states
-- Implement proper accessibility
-- Write self-documenting code
-
-## Performance Requirements
-- Components must use React.memo when appropriate
-- Event handlers should use useCallback
-- Computed values should use useMemo
-- Lazy load heavy components
-
-## Testing
-- Write tests for all utils
-- Component tests for critical features
-- Use React Testing Library
+## テスト品質の指標
+- **テストの独立性**: 各テストは他のテストに依存しない
+- **テストの再現性**: 同じ結果が常に得られる
+- **テストの明確性**: テストの意図が明確に分かる
+- **テストの保守性**: コード変更時にテストも適切に更新される 
 ```
 
 ## 6.4 チーム開発での活用
@@ -258,7 +227,7 @@ src/
 ### チーム用設定の共有
 
 #### プロジェクトレベルの設定
-最近のCursorでは、これまで使用してきた`.cursorrules`に加えて、`.cursor/rules`ディレクトリでAIの振る舞いをより細かく制御することも推奨されています。
+最近のCursorでは、Settings → Cursor RulesでプロジェクトごとのAIの振る舞いを制御することが推奨されています。
 詳細は[公式ドキュメント](https://docs.cursor.com/ja/context/rules)を参照してください。
 
 #### コードレビューのワークフロー
@@ -312,6 +281,9 @@ Preferences → Keyboard Shortcuts
 4. .cursorignoreで大きなファイルを除外
 ```
 
+.cursorignoreは.gitignoreと同じように使えます。  
+詳しくは[公式ドキュメント](https://docs.cursor.com/ja/context/ignore-files#cursorignore)を参照してください。
+
 ### バッチ処理の活用
 
 ```
@@ -330,7 +302,7 @@ Agent (Agentモード):
 
 - ✅ AIへの効果的なプロンプトの書き方
 - ✅ AIと協働する際のトラブルシューティング
-- ✅ .cursorrulesでAIの動作を最適化
+- ✅ Cursor RulesでAIの動作を最適化
 - ✅ チーム開発でAIを活用する方法
 - ✅ AIペアプログラミングで生産性を向上させるTips
 
@@ -368,6 +340,8 @@ MCPサーバーは、Cursorに外部ツールやサービスを統合できる�
 - **Linear**: タスク管理
 - **Playwright**: ブラウザ自動操作
 - **Postgres/SQLite**: データベース操作
+- **Context7**: 最新ドキュメントの参照
+
 - その他多数
 
 ### MCPサーバーの追加方法
@@ -438,7 +412,7 @@ Agent: 「このPRのレビューコメントを反映して修正」
 
 - [ ] 効果的なプロンプトが書ける
 - [ ] トラブルを自力で解決できる
-- [ ] .cursorrulesを最適化できる
+- [ ] Cursor Rulesを最適化できる
 - [ ] チーム開発で活用できる
 - [ ] 6-10倍の開発速度を実現できる
 
