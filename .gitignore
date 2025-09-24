@@ -9,3 +9,5 @@ CLAUDE.md
 .cursorrules/
 # keep local only
 kanban-curriculum/INSTRUCTOR_GUIDE.md
+
+.DS_Store
