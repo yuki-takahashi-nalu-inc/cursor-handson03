@@ -51,7 +51,7 @@ cd kanban-board-cursor
 
 ```
 React + Vite + TypeScriptでプロジェクトを初期化してください。
-プロジェクト名: kanban-board
+
 以下も設定してください：
 - TypeScriptを使用
 - package.jsonにnpm scripts追加
