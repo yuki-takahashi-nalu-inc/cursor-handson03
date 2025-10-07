@@ -37,8 +37,11 @@
 ```
 cursor03/
 ├── README.md                 # このファイル
+├── TIMETABLE.md             # タイムスケジュール
 ├── kanban-curriculum/        # カリキュラム本体
 │   ├── README.md            # カリキュラム概要
+│   ├── PRECHECK.md          # 事前確認事項
+│   ├── SPEC.md              # 仕様書
 │   ├── chapter1_setup.md    # 第1章: 環境構築
 │   ├── chapter2_agent.md    # 第2章: Agent機能
 │   ├── chapter3_inline.md   # 第3章: Cmd+K/Tab補完
