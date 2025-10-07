@@ -43,8 +43,9 @@ mkdir kanban-board-cursor
 cd kanban-board-cursor
 ```
 
-2. **Cursorでフォルダを開く**
-   - File → Open Folder から作成したフォルダを選択
+2. **Cursorでフォルダを開く方法（どちらでもOK）**
+   - ターミナルで `cursor .` を実行
+   - または、Cursorのメニューから「File → Open Folder」で作成したフォルダを選択
 
 3. **Agent(Cmd+I) を開いて、以下を入力：**
 
@@ -60,11 +61,21 @@ React + Vite + TypeScriptでプロジェクトを初期化してください。
 **💡 ポイント**: Cursorは指示に従ってコマンドを提案し、実行の承認を求めてきます。内容を確認して「Run」をクリック。
 
 ### 期待される実行内容
-```bash
-npm create vite@latest . -- --template react-ts
-npm install
-```
+
+- Cursor(AI)がViteのReact + TypeScriptテンプレートで新規プロジェクトを作成する
+- Cursor(AI)が依存パッケージ（npm modules）をインストールする
+
+
 ### 実行結果イメージ
+
+プロジェクトのセットアップが完了したら、開発サーバーを起動してみましょう。
+
+**開発サーバー起動：**
+```bash
+npm run dev
+```
+
+**💻 実行イメージ（開発サーバーの起動）**
 
 <img src="./img/1-3.png" alt="1-3" width="400" />
 
@@ -136,12 +147,7 @@ npm install -D tailwindcss@^3.4.0 postcss autoprefixer
 
 1. `src/App.tsx`を開く
 2. 既存のコードを全削除
-3. Tab補完の使い方：
-   - コメントを入力してTabキーで生成
-   - **実践的なコツ**: 一度に全部入れようとせず、段階的に補完を活用
-     - 例: `f`と入力→Tab→`function`が補完される
-     - 改行して`div`と入力→Tab→適切なJSX要素が補完される
-     - この繰り返しでコードを構築
+3. Tab補完の使い方： コメントを入力してTabキーで生成
 
 ```tsx
 // Create a simple kanban board layout with three columns: Todo, Doing, Done
@@ -173,6 +179,12 @@ function App() {
 
 export default App
 ```
+
+**タブ補完の実践的なコツ**: 一度に全部入れようとせず、段階的に補完を活用
+例: 
+- `f`と入力→Tab→`function`が補完される
+- 改行して`div`と入力→Tab→適切なJSX要素が補完される
+- この繰り返しでコードを構築
 
 ## 1.7 データストアの初期化
 
