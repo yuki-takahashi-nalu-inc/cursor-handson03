@@ -152,6 +152,10 @@ git reset --hard HEAD  # 直前のコミットに戻る
 | Agent | Cmd+I | Ctrl+I | 複数ファイル編集/大規模な実装 |
 | Tab補完 | Tab | Tab | AI自動補完・新規コード生成 |
 
+その他のよく使うショートカット
+- Cmd+B / Ctrl+B サイドバーの表示・非表示
+- Cmd+J / Ctrl+J ターミナルの表示・非表示
+
 ## 📝 完成するアプリの機能
 
 - ✅ 3つのカラム（To Do、Doing、Done）

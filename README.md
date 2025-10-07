@@ -37,7 +37,6 @@
 ```
 cursor03/
 ├── README.md                 # このファイル
-├── CLAUDE.md                 # プロジェクト指示書
 ├── kanban-curriculum/        # カリキュラム本体
 │   ├── README.md            # カリキュラム概要
 │   ├── chapter1_setup.md    # 第1章: 環境構築
