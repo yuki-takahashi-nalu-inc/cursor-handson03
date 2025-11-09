@@ -56,7 +56,10 @@ React + Vite + TypeScriptでプロジェクトを初期化してください。
 - TypeScriptを使用
 - package.jsonにnpm scripts追加
 - .gitignoreファイル作成
+
+最後にnpm installを実行してください。
 ```
+
 
 **💡 ポイント**: Cursorは指示に従ってコマンドを提案し、実行の承認を求めてきます。内容を確認して「Run」をクリック。
 

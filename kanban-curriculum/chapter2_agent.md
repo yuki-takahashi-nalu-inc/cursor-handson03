@@ -1,5 +1,7 @@
 # 第2章: Agent（Cmd+I）でかんばんボードを構築
 
+注意: カリキュラムの調整を行い、2.4が欠番となっております
+
 ## 学習目標
 - Agent（Cmd+I）でAIと協働して効率的に開発する方法を体験
 - AIの自律的なタスク実行でプロジェクト全体を構築
@@ -8,7 +10,7 @@
 
 ## ⚡ この章の進め方
 
-### 📌 必須課題（2.1～2.4）
+### 📌 必須課題（2.1~2.3）
 基本的なかんばんボードを構築します。これだけでチャプター3以降の学習が可能です。
 - **達成目標**: 動作する最小限のかんばんボード（データはlocalStorageに自動保存）
 
@@ -30,103 +32,111 @@
 2. **整合性**: ファイル間の依存関係を自動解決
 3. **エラー対応**: 発生したエラーを自動的に修正
 
-## 2.2 型定義とストア構造の構築
-
-### ハンズオン課題1: プロジェクト基盤の作成
+## 2.2 基本機能の実装
 
 **Agent（Cmd+I）を開いて、以下を入力：**
 
 ```
-かんばんボードの基盤を作成してください：
+■ 実装要件（見やすく箇条書き）
 
-1. src/types/kanban.ts に型定義を作成
-   - Card: id, title, description, status, priority, createdAt, updatedAt
-   - Column: id, title, cards配列, wipLimit
-   - Board: columns配列
+---
 
-2. src/store/kanbanStore.ts にZustandストアを作成
-   - persistミドルウェアでlocalStorageに自動保存
-   - カードのCRUD操作
-   - ドラッグ&ドロップによる移動
-   - WIPリミットの管理
+### 🟧 ドラッグ＆ドロップ
+- HTML5 Drag and Drop API（draggable, onDragStart, onDragOver, onDrop）
+  - カードをカラム間で移動可能
+- Framer Motionでアニメーション付与
+- moveCard関数でストアを更新
 
-すべてTypeScriptで型安全に実装してください。
+---
+
+### 📝 タスクCRUD UI
+- **作成**: ダイアログから新規タスク作成（タイトル・説明入力）
+- **編集**: カードクリックまたはメニューから編集ダイアログ表示
+- **削除**: カードのメニューから削除
+- **表示**: カラムごとにカードを一覧表示
+
+---
+
+### 🧩 コンポーネント構成
+- **TaskCard.tsx**  
+  └ ドラッグ可能なカード（編集・削除用メニュー付き）
+- **Column.tsx**  
+  └ ドロップゾーン付きカラム
+- **TaskDialog.tsx**  
+  └ タスク作成・編集用フォームダイアログ
+- **App.tsx**  
+  └ 全体レイアウトとダイアログの状態管理
+
+---
+
+### 🛠 技術仕様
+- HTML5 Drag and Dropによる実装
+- Framer Motionでカード移動など各種アニメーション
+- shadcn/uiのコンポーネント利用（dialog, button, input, textarea, dropdown-menu等）
+- CSSは最小限（Tailwind基本クラス中心）
+
+---
+
+### ⚠️ 注意
+- **既存の`kanbanStore.ts`のCard/Column構造は変更しないこと**
+- 実装はUI層のみ
 ```
 
-**Agentが実行する内容：**
-- 2つのファイルを同時に作成
-- 相互の依存関係を考慮した実装
-- 型定義の一貫性を保証
-- データはZustandのpersistでlocalStorageに自動保存
+## 2.3 追加実装要件
 
-## 2.3 UIコンポーネント一式の作成
-
-### ハンズオン課題2: コンポーネント群の一括生成
-
-**Agent（Cmd+I）で以下を依頼：**
+**Agent（Cmd+I）を開いて、以下を入力：**
 
 ```
-shadcn/uiを使ってかんばんボードのUIコンポーネントを作成してください：
+■ 追加実装要件（見やすく箇条書き）
 
-【必要なshadcn/uiコンポーネント】
-- Card, Button, Input, Badge, Dialog, Select, Textarea
+### ヘッダー機能（Header.tsx）
+- タイトル「Kanban Board」
+- 「新しいタスク」ボタン（全カラム共通でタスク作成）
+- ボードリセットボタン（確認ダイアログ付き）
+- 設定ボタン（WIP制限設定など、必要なら）
 
-【作成するコンポーネント】
-1. src/components/Card/KanbanCard.tsx
-   - カード表示（タイトル、説明、優先度バッジ）
-   - 削除ボタン（Trash2アイコン）
-   - ドラッグハンドル（GripVerticalアイコン）
+---
 
-2. src/components/Column/KanbanColumn.tsx
-   - カラムヘッダー（タイトル、カード数/WIPリミット）
-   - カードリスト表示
-   - 新規カード追加ボタン
+### 検索・フィルタ機能（SearchBar.tsx）
+- 検索入力（タイトル・説明でリアルタイム検索）
+- タグフィルタ（Popoverでタグを複数選択可能）
+- フィルタクリアボタン
+- アクティブフィルタの表示
 
-3. src/components/Board/Board.tsx
-   - 3カラムレイアウト（Todo, Doing, Done）
-   - Zustandストアとの連携
-   - レスポンシブデザイン
+---
 
-4. src/components/AddCardDialog.tsx
-   - カード追加フォーム（Dialog使用）
-   - タイトル、説明、優先度の入力
-   - バリデーション付き
+### ストア拡張（kanbanStore.ts）
+- 状態追加: 
+  - `searchQuery: string`
+  - `selectedTags: string[]`
+- アクション追加: 
+  - `setSearchQuery`
+  - `setSelectedTags`
+- メソッド追加: 
+  - `getFilteredTasks()`　（検索・タグでタスクをフィルタ）
+  - `getAllTags()`（全タスクからタグ一覧抽出）
 
-必要なライブラリのインストールも自動実行してください。
-```
+---
 
-**💡 ポイント**: Agentは必要なnpmコマンドも自動で実行します
+### App.tsx の更新
+- Header・SearchBarを追加
+- フィルタリング済みタスクを表示
+- 検索・フィルタの状態を管理
 
-## 2.4 ドラッグ&ドロップ機能の実装
+---
 
-### ハンズオン課題3: Framer Motionでドラッグ&ドロップ
+### UIコンポーネント追加
+- `components/ui/popover.tsx`（タグフィルタ用）
+- `components/ui/label.tsx`（フォームラベル用。既存であれば不要）
 
-**Agent（Cmd+I）で実装：**
+---
 
-```
-Framer Motionを使ってドラッグ&ドロップ機能を実装してください：
-
-1. framer-motionをインストール
-
-2. src/components/Card/KanbanCard.tsx を更新
-   - motion.divでラップ
-   - drag="true"とlayoutId設定
-   - ドラッグ中のスタイル変更
-
-3. src/components/Column/KanbanColumn.tsx を更新
-   - ドロップゾーンの実装
-   - AnimatePresenceでアニメーション
-
-4. src/store/kanbanStore.ts を更新
-   - moveCardアクションの実装
-   - カラム間の移動ロジック
-   - WIPリミットのチェック
-
-5. src/components/Board/Board.tsx を更新
-   - LayoutGroupでアニメーション管理
-   - ドラッグ&ドロップのハンドラー実装
-
-すべてのファイルを更新し、動作確認まで行ってください。
+### 技術仕様
+- 検索はリアルタイム（入力即反映）
+- タグは複数選択可能
+- フィルタ状態はlocalStorageに保存（Zustand persist利用）
+- CSSはTailwind基本クラスで最小限
+- ※ 既存のCard構造は変更せず、検索・フィルタ機能のみ追加
 ```
 
 <img src="./img/2-4.png" alt="2-4" width="400" />
@@ -250,7 +260,7 @@ UIの見た目とアニメーションを洗練させてください：
 
 ## 📝 この章で学んだこと
 
-### 必須課題（2.1～2.4）でAIと協働して実現したこと
+### 必須課題（2.1～2.3）でAIと協働して実現したこと
 - ✅ Agentモードを使った高速開発の体験
 - ✅ AIによる複数ファイルの同時作成・編集
 - ✅ 基本的なかんばんボードの構築
