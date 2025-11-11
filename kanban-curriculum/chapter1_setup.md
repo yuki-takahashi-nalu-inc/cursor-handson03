@@ -37,7 +37,8 @@
 
 ### ハンズオン課題1: プロジェクトセットアップ
 
-1. **新規フォルダの作成**
+1. **新規フォルダの作成:** ターミナルで以下を実行(`cursor`ではないです)
+
 ```bash
 mkdir kanban-board-cursor
 cd kanban-board-cursor
@@ -47,7 +48,7 @@ cd kanban-board-cursor
    - ターミナルで `cursor .` を実行
    - または、Cursorのメニューから「File → Open Folder」で作成したフォルダを選択
 
-3. **Agent(Cmd+I) を開いて、以下を入力：**
+3. **Agent(Cmd+I) を開いて、以下を入力：** ここからは `cursor` で実行します。
 
 ```
 React + Vite + TypeScriptでプロジェクトを初期化してください。
